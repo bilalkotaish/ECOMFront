@@ -76,6 +76,24 @@ function App() {
       toast.error(msg);
     }
   };
+  const getAllproducts = () => {
+    fetchData("/api/product/products").then((res) => {
+      setallProductData(res.data || []);
+      console.log("Fetched All Product data:", res);
+    });
+  };
+  useEffect(() => {
+    if (islogin) {
+      getAllproducts();
+      getCart();
+      getList();
+      getuserDetails();
+      fetchData("/api/category/getcategory").then((res) => {
+        console.log("Fetched category data:", res);
+        setCatData(res.categories || []);
+      });
+    }
+  }, [islogin]);
   useEffect(() => {
     fetchData("/api/category/getcategory").then((res) => {
       console.log("Fetched category data:", res);
