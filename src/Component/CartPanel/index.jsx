@@ -20,7 +20,7 @@ export default function CartPanel(props) {
   };
   return (
     <>
-      <div className=" scroll w-full max-h-[300px] overflow-y-scroll overflow-x-hidden py-3 px-4">
+      <div className="w-full max-h-[300px] !overflow-y-auto !overflow-x-hidden py-3 px-3">
         {props.data.length === 0 ? (
           <>
             <div className=" text-center text-[14px] font-[500] text-[#0000007a]">
@@ -32,7 +32,7 @@ export default function CartPanel(props) {
           props.data.map((item) => {
             return (
               <div className=" cartItem w-full flex items-center  gap-4 !border-b !border-[rgba(0,0,0,0.2)] pb-4 pt-4">
-                <div className="img w-[25%] overflow-hidden h-[80px] rounded-md ">
+                <div className="img w-[25%] !overflow-hidden h-[80px] rounded-md ">
                   <Link
                     to={`/productdetails/${item.productId._id}`}
                     className="block group"
@@ -73,7 +73,7 @@ export default function CartPanel(props) {
         )}
       </div>
 
-      <div className="btmsection absolute bottom-[10px] left-[10px] w-full overflow-hidden pr-5 ">
+      <div className="btmsection absolute bottom-[10px] left-[10px] w-full !overflow-hidden pr-5 ">
         <div className="btminfo w-full px-4 border-t border-[rgba(0,0,0,0.1)] py-3 flex justify-between items-center flex-col ">
           <div className="flex items-center w-full justify-between ">
             <span className="text-[16px] font-[500]">

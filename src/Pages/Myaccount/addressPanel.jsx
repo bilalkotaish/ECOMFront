@@ -319,13 +319,13 @@ export default function AddressPanel() {
       <div className="flex items-center gap-3 pb-5">
         <Button
           type="submit"
-          className="btn-org w-full  flex-1 !h-[50px] !text-[16px] font-semibold"
+          className="btn-org w-full  flex-1 !h-[50px] whitespace-nowrap !text-[12px] lg:!text-[16px] font-semibold"
         >
           {context?.addressmode === "edit" ? "Edit Address" : "Add Address"}
         </Button>
         <Button
           onClick={handleClose}
-          className="btn-org btn-border w-full  flex-1 !h-[50px] !text-[16px] font-semibold"
+          className="btn-org btn-border w-full  flex-1 !h-[50px] !text-[12px] lg:!text-[16px] font-semibold"
         >
           Cancel
         </Button>

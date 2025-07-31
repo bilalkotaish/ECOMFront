@@ -13,7 +13,7 @@ export default function Catslider(props) {
       <div className="container">
         <Swiper
           spaceBetween={20}
-          navigation={context.windowWidth > 992}
+          navigation={context?.windowWidth > 992}
           modules={[Navigation]}
           breakpoints={{
             0: {

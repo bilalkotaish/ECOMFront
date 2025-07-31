@@ -230,213 +230,62 @@ export default function Address() {
 
   return (
     <>
-      <section className="py-10">
-        <div className="container flex gap-5">
-          <div className="col1 w-[20%]">
-            <Accountsidebar />
-          </div>
+       <section className=" w-full py-10 ">
+    <div className="container flex flex-col lg:flex-row gap-5">
+      <div className=" w-full lg:w-[20%]">
+        <Accountsidebar />
+      </div>
 
-          <div className="col-2 w-[50%]">
-            <div className="card bg-white shadow-md rounded-md p-5 mb-5">
-              <div className="flex items-center">
-                <h2 className="pb-3 font-[500] justify-between"> My Address</h2>
-              </div>
+      <div className=" w-full md:w-[70%] lg:w-[50%]">
+  <div className="card bg-white shadow-md rounded-md p-5 mb-5">
+    <div className="flex items-center">
+      <h2 className="pb-3 font-[500] text-lg">My Address</h2>
+    </div>
 
-              <hr />
-              <div
-                onClick={context.toggleaddressPanel(true)}
-                className="flex items-center mt-3 p-5 cursor-pointer hover:bg-[#e7f3f9] justify-center border border-[rgba(0,0,0,0.2)] border-dashed bg-[#f1faff]"
-              >
-                <span className="text-[16px] font-[400]">Add Address</span>
-              </div>
-              <div className="gap-2 flex-col flex mt-4">
-                {address?.length > 0 &&
-                  address?.map((address, index) => {
-                    return (
-                      <>
-                        <div className="addressBox p-3 border  flex-col border-[rgba(0,0,0,0.2)] bg-[#fafafa]  w-full !pt-3 !pb-3 cursor-pointer">
-                          <div className="flex justify-between items-start">
-                            <span className="text-[12px] font-[500] rounded-sm bg-[#e9e9e9] inline-block">
-                              {address.Address_Type}
-                            </span>
-                            <Addressmenu
-                              address={address}
-                              setmode={setmode}
-                              editAddress={editAddress}
-                            />
-                          </div>
+    <hr className="mb-4" />
 
-                          <h4 className="text-[13px] font-[600] ">
-                            {context?.userData?.name}
-                            {"  "}
-                            {address?.Mobile}
-                          </h4>
+    <div
+      onClick={context.toggleaddressPanel(true)}
+      className="flex items-center mt-3 p-4 cursor-pointer hover:bg-[#e7f3f9] justify-center border border-[rgba(0,0,0,0.2)] border-dashed bg-[#f1faff] rounded-md transition-all duration-200"
+    >
+      <span className="text-[16px] font-[500]">Add Address</span>
+    </div>
 
-                          {/* <Radio
-                            onChange={handleChange}
-                            value={address._id}
-                            checked={selectedValue === address._id}
-                            name="address"
-                          /> */}
-                          <span className="text-[12px]  pt-0 block w-full  font-[400]">
-                            {address?.Address_line},{address?.City},{" "}
-                            {address?.Country},{address?.Pincode},
-                            {address?.Mobile},{address?.landmark},
-                          </span>
-                          {/* <span
-                            onClick={() => removeAddress(address._id)}
-                            className="text-[20px] ml-auto hover:text-[#ff0000] cursor-pointer"
-                          >
-                            <RiDeleteBin2Line />{" "}
-                          </span> */}
-                        </div>
-                      </>
-                    );
-                  })}
-              </div>
+    <div className="gap-3 flex flex-col mt-5">
+      {address?.length > 0 &&
+        address.map((address, index) => (
+          <div
+            key={index}
+            className="addressBox p-4 border border-[rgba(0,0,0,0.2)] bg-[#fafafa] rounded-md"
+          >
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-[12px] font-[500] rounded-sm bg-[#e9e9e9] px-2 py-1">
+                {address.Address_Type}
+              </span>
+              <Addressmenu
+                address={address}
+                setmode={setmode}
+                editAddress={editAddress}
+              />
             </div>
+
+            <h4 className="text-[14px] font-[600] mb-1">
+              {context?.userData?.name} — {address?.Mobile}
+            </h4>
+
+            <p className="text-[13px] leading-snug font-[400] text-gray-700">
+              {address?.Address_line}, {address?.City}, {address?.Country},
+              {address?.Pincode}, {address?.Mobile}, {address?.landmark}
+            </p>
           </div>
+        ))}
+    </div>
+  </div>
+</div>
+
         </div>
       </section>
 
-      {/* <Dialog onClose={handleClose} open={isOpen}>
-        <DialogTitle className="text-center">
-          {mode === "edit" ? "Edit Address" : "Add Address"}
-        </DialogTitle>
-        <form action="" className="p-8 py-3 pb-8 " onSubmit={handlesubmit}>
-          <div className="flex items-center gap-3 pb-5">
-            <TextField
-              className="w-full"
-              id="outlined-basic"
-              name="Address_line"
-              value={formfield.Address_line}
-              onChange={onChangeInput}
-              label="Address_line"
-              variant="outlined"
-            />
-          </div>
-          <div className="flex items-center gap-3 pb-5">
-            <TextField
-              className="w-1/2"
-              id="outlined-basic"
-              value={formfield.Country}
-              name="Country"
-              label="Country"
-              onChange={onChangeInput}
-              variant="outlined"
-            />
-            <TextField
-              className="w-1/2"
-              id="outlined-basic"
-              name="City"
-              label="City"
-              value={formfield.City}
-              onChange={onChangeInput}
-              variant="outlined"
-            />{" "}
-          </div>
-          <div className="flex items-center gap-3 pb-5">
-            <TextField
-              className="w-full"
-              id="outlined-basic"
-              value={formfield.State}
-              name="State"
-              label="State"
-              onChange={onChangeInput}
-              variant="outlined"
-            />
-            <TextField
-              className="w-full"
-              id="outlined-basic"
-              value={formfield.Pincode}
-              name="Pincode"
-              onChange={onChangeInput}
-              label="Pincode"
-              variant="outlined"
-            />
-          </div>
-          <div className="flex items-center gap-3 pb-5">
-            <div className="w-1/2">
-              <PhoneInput
-                type="text"
-                disabled={isLoading}
-                defaultCountry="lb"
-                className="!w-full !h-[56px]"
-                value={phone}
-                name="Mobile"
-                inputStyle={{
-                  width: "100%",
-
-                  border: "!3px !solid !rgba(0,0,0,0.7)",
-                }}
-                containerStyle={{
-                  width: "100%",
-
-                  border: "!3px !solid !rgba(0,0,0,0.7)",
-                  borderRadius: "6px",
-                }}
-                onChange={(phone) => {
-                  setPhone(phone);
-                  setformfield((prev) => ({ ...prev, Mobile: phone }));
-                }}
-              />
-            </div>
-          
-
-            <div className="w-1/2">
-              <TextField
-                className="w-full"
-                id="outlined-basic"
-                value={formfield.landmark}
-                name="landmark"
-                label="landmark"
-                onChange={onChangeInput}
-                variant="outlined"
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-3 pb-5">
-            <FormControl>
-              <FormLabel id="demo-row-radio-buttons-group-label">
-                Address Type
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                value={Addresstype}
-                onChange={onChangeAddresstype}
-              >
-                <FormControlLabel
-                  value="Home"
-                  control={<Radio />}
-                  label="Home"
-                />
-                <FormControlLabel
-                  value="Office"
-                  control={<Radio />}
-                  label="Office"
-                />
-              </RadioGroup>
-            </FormControl>
-          </div>
-
-          <div className="flex items-center gap-3 pb-5">
-            <Button
-              type="submit"
-              className="btn-org w-full  flex-1 !h-[50px] !text-[16px] font-semibold"
-            >
-              {mode === "edit" ? "Edit Address" : "Add Address"}
-            </Button>
-            <Button
-              onClick={handleClose}
-              className="btn-org btn-border w-full  flex-1 !h-[50px] !text-[16px] font-semibold"
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </Dialog> */}
     </>
   );
 }

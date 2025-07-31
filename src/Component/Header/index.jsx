@@ -128,7 +128,8 @@ export default function Header() {
                 <img src={logo} className="w-[140px] h-auto"></img>
               </Link>
             </div>
-            <div className="col2 lg:w-[40%] pt-2 fixed top-0 left-0 w-full h-full lg:static p-2 lg:p-1 hidden lg:block ">
+            <div className={`col2 lg:w-[40%] pt-2 fixed top-0 left-0 w-full h-full lg:static p-2 lg:p-1 
+               lg:block ${context.OpenSearch===true?'block':'hidden'} `}>
               <Search />
             </div>
 

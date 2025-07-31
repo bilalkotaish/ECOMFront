@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import Button from "@mui/material/Button";
 import { MdCloudUpload } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
@@ -8,7 +8,7 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { useContext, useEffect, useState } from "react";
 import { myContext } from "../../App";
 import CircularProgress from "@mui/material/CircularProgress";
-import { uploadImage } from "../../utils/api";
+import { fetchData, uploadImage } from "../../utils/api";
 import { LiaMapMarkedSolid } from "react-icons/lia";
 
 export default function Accountsidebar() {
@@ -63,6 +63,27 @@ export default function Accountsidebar() {
       setupload(false);
     }
   };
+  const navigate = useNavigate();
+
+const logout = () => {
+  fetchData(`/api/user/Logout?token=${localStorage.getItem("accesstoken")}`, {
+    withCredentials: true,
+  }).then((res) => {
+    console.log(res);
+    if (res.error === false) {
+      context.setislogin(false);
+      localStorage.removeItem("accesstoken");
+      localStorage.removeItem("refreshtoken");
+      context.setCatData([]);
+      context.setCartData([]);
+      context.setListData([]);
+      navigate("/");
+    } else {
+      context.setislogin(true);
+    }
+  });
+};
+
   return (
     <div className="card bg-white shadow-md rounded-md ">
       <div className="w-full p-3 p-5 flex items-center justify-center flex-col">
@@ -141,8 +162,8 @@ export default function Accountsidebar() {
           </NavLink>
         </li>
         <li className="w-full">
-          <NavLink to="/logout" exact={true} activeClassName="isActive">
-            <Button className="w-full !rounded-none flex !text-left !px-5 !justify-start !py-2 items-center pt-1 !capitalize !text-[rgba(0,0,0,0.7)] gap-2">
+          <NavLink onClick={logout}  exact={true} activeClassName="isActive">
+            <Button onClick={logout} className="w-full !rounded-none flex !text-left !px-5 !justify-start !py-2 items-center pt-1 !capitalize !text-[rgba(0,0,0,0.7)] gap-2">
               <RiLogoutBoxLine className="text-[18px]" /> Logout
             </Button>
           </NavLink>

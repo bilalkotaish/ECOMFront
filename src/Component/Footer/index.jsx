@@ -64,10 +64,7 @@ export default function Footer() {
         <p className="text-[14px] mb-2">Saida - South-Governate<br />BillyEcommerceStore - Lebanon</p>
         <Link to="mailto:bilalkotaish2000@gmail.com" className="text-blue-500 block mb-2">bilalkotaish2000@gmail.com</Link>
         <span className="block mb-3">Phone: 0096178994740</span>
-        <div className="flex items-center gap-2">
-          <IoChatbubblesOutline className="text-[30px] text-primary" />
-          <p className="text-[14px]">Online Chat<br />Get Expert Help</p>
-        </div>
+        
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -144,7 +141,7 @@ export default function Footer() {
         </div>
 
         {context.cartData?.length > 0 ? (
-          <div className="scroll w-full max-h-[300px] overflow-y-scroll overflow-x-hidden py-3 px-4">
+          <div className="scroll w-full max-h-[300px] !overflow-y-scroll !overflow-x-hidden py-3 px-4">
             <CartPanel data={context.cartData} />
           </div>
         ) : (

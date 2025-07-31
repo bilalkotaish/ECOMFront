@@ -44,6 +44,8 @@ import LegalNotice from "./Component/Otherpages/legalnotice";
 import TermsAndConditions from "./Component/Otherpages/Termofuse";
 import DeliveryInfo from "./Component/Otherpages/Delivery";
 import BlogDetailsPage from "./Component/Otherpages/Blogdetails/blog.details";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
 export const myContext = createContext();
 
@@ -52,7 +54,11 @@ function App() {
     open: false,
     item: {},
   });
-  const [maxWidth, setMaxWidth] = useState("lg");
+  const [maxWidth, setMaxWidth] = useState("xs");
+    const [minWidth, setMinWidth] = useState("sm");
+      const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
   const [fullWidth, setFullWidth] = useState(true);
   const [openCartPanel, setopenCartPanel] = useState(false);
   const [openaddressPanel, setopenaddressPanel] = useState(false);
@@ -60,13 +66,16 @@ function App() {
   const [AddressId, setAddressId] = useState("");
   const [searchData, setSearchData] = useState([]);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+const [OpenSearch,setOpenSearch]=useState(false)
   const [islogin, setislogin] = useState(false);
   const [userData, setuserData] = useState(null);
   const [catData, setCatData] = useState([]);
   const [cartData, setCartData] = useState([]);
   const [Addedlist, setAddedlist] = useState(false);
   const [listData, setListData] = useState([]);
+  const [openFilter,setopenFilter]=useState(false)
+  const[filterbtnshow,setfilterbtnshow]=useState(false)
+  const [allproductData, setallProductData] = useState([]);
 
   const Alertbox = (status, msg) => {
     if (status === "success") {
@@ -322,6 +331,10 @@ function App() {
     setSearchData,
     windowWidth,
     setWindowWidth,
+    openFilter,
+    setopenFilter,
+    filterbtnshow,setfilterbtnshow,
+    OpenSearch,setOpenSearch
   };
   return (
     <>
@@ -388,14 +401,14 @@ function App() {
           <Dialog
             open={openProduct.open}
             onClose={handleClose}
-            fullWidth={fullWidth}
-            maxWidth={maxWidth}
+            fullScreen={fullScreen}
+           
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
-            className="productdetailsmodal"
+            
           >
             <DialogContent>
-              <div className="flex items-center w-full productdetailsmodal container relative">
+              <div className="flex items-center w-[30%] lg:w-full productdetailsmodal container relative">
                 <Button
                   onClick={handleClose}
                   className="!w-[40px] !h-[40px] !min-w-[40px] !text-[25px] !rounded-full !text-black !absolute top-[15px] right-[0px]"

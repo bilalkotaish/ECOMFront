@@ -146,176 +146,145 @@ export default function Myaccount() {
 
   return (
     <>
-      <section className="py-10">
-        <div className="container flex gap-5">
-          <div className="col1 w-[20%]">
+
+      <section className=" w-full py-10 ">
+        <div className="container flex flex-col lg:flex-row gap-5">
+          <div className=" w-full lg:w-[20%]">
             <Accountsidebar />
           </div>
 
-          <div className="col-2 w-[50%]">
-            <div className="card bg-white shadow-md rounded-md p-5 mb-5">
-              <div className="flex items-center">
-                <h2 className="pb-3 font-[500] justify-between"> My Profile</h2>
-                <Button
-                  className="!ml-auto"
-                  onClick={() => {
-                    setisclick(!isclick);
-                  }}
-                >
-                  Change Password
-                </Button>
+          <div className="w-full md:w-[70%] lg:w-[50%]">
+      <div className="bg-white shadow-md rounded-md p-5 mb-5">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
+          <h2 className="pb-2 text-xl font-semibold">My Profile</h2>
+          <Button className="!mt-2 md:!mt-0" onClick={() => setisclick(!isclick)}>
+            Change Password
+          </Button>
+        </div>
+        <hr className="my-3" />
+
+        <form className="space-y-4" onSubmit={handlesubmit}>
+          <div className="flex flex-col md:flex-row gap-5">
+            <div className="w-full md:w-1/2">
+              <TextField
+                label="Full Name"
+                variant="outlined"
+                disabled={isLoading}
+                value={formfield.name}
+                size="small"
+                className="w-full"
+                name="name"
+                onChange={onChangeInput}
+              />
+            </div>
+            <div className="w-full md:w-1/2">
+              <TextField
+                type="email"
+                label="Email"
+                disabled
+                variant="outlined"
+                size="small"
+                className="w-full"
+                value={formfield.email}
+                name="email"
+              />
+            </div>
+          </div>
+
+          <div className="w-full">
+            <PhoneInput
+              type="text"
+              disabled={isLoading}
+              defaultCountry="lb"
+              className="!w-full !h-[56px]"
+              value={phone}
+              name="Mobile"
+              inputStyle={{ width: "100%" }}
+              containerStyle={{
+                width: "100%",
+                borderRadius: "6px",
+              }}
+              onChange={(phone) => {
+                setPhone(phone);
+                setformfield((prev) => ({ ...prev, Mobile: phone }));
+              }}
+            />
+          </div>
+
+          <div className="pt-2">
+            <Button
+              type="submit"
+              disabled={!validValue}
+              className="btn-org w-full sm:w-[140px]"
+            >
+              Save
+              {isLoading && <CircularProgress size={18} className="ml-2" />}
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      {/* Change Password Form */}
+      <Collapse isOpened={isclick}>
+        <div className="bg-white shadow-md rounded-md p-5 mt-5">
+          <h2 className="pb-3 text-lg font-semibold">Change Password</h2>
+
+          <form className="space-y-4" onSubmit={handlesubmitChange}>
+            <div className="flex flex-col md:flex-row gap-5">
+              {context.userData?.SignUpGoogle === false && (
+                <div className="w-full md:w-1/2">
+                  <TextField
+                    label="Old Password"
+                    type="password"
+                    variant="outlined"
+                    disabled={isLoading2}
+                    value={changePassword.oldPassword}
+                    size="small"
+                    className="w-full"
+                    name="oldPassword"
+                    onChange={onChangeInput}
+                  />
+                </div>
+              )}
+              <div className="w-full md:w-1/2">
+                <TextField
+                  label="New Password"
+                  type="password"
+                  variant="outlined"
+                  disabled={isLoading2}
+                  value={changePassword.password}
+                  size="small"
+                  className="w-full"
+                  name="password"
+                  onChange={onChangeInput}
+                />
               </div>
-              <hr />
-              <form className="mt-8 " onSubmit={handlesubmit}>
-                <div className="flex items-center  gap-5 ">
-                  <div className="w-[50%]">
-                    <TextField
-                      label="Full Name"
-                      variant="outlined"
-                      disabled={isLoading}
-                      value={formfield.name}
-                      size="small"
-                      className="w-full"
-                      name="name"
-                      onChange={onChangeInput}
-                    />
-                  </div>
-                  <div className="w-[50%] h-auto">
-                    <TextField
-                      id="EmailId*"
-                      type="email"
-                      value={formfield.email}
-                      disabled={true}
-                      label="Email"
-                      variant="outlined"
-                      size="small"
-                      className="w-full "
-                      autoComplete="email"
-                      name="email"
-                      onChange={onChangeInput}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center mt-3 gap-5 ">
-                  <div className="w-[49%]">
-                    <PhoneInput
-                      type="text"
-                      disabled={isLoading}
-                      defaultCountry="lb"
-                      className="!w-full !h-[56px]"
-                      value={phone}
-                      name="Mobile"
-                      inputStyle={{
-                        width: "100%",
-
-                        border: "!3px !solid !rgba(0,0,0,0.7)",
-                      }}
-                      containerStyle={{
-                        width: "100%",
-
-                        border: "!3px !solid !rgba(0,0,0,0.7)",
-                        borderRadius: "6px",
-                      }}
-                      onChange={(phone) => {
-                        setPhone(phone);
-                        setformfield((prev) => ({ ...prev, Mobile: phone }));
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <br />
-
-                <div className="flex items-center gap-5">
-                  <Button
-                    type="submit"
-                    disabled={!validValue}
-                    className="btn-org w-[100px]"
-                  >
-                    {" "}
-                    Save
-                    {isLoading === true ? (
-                      <CircularProgress color="inherit" />
-                    ) : (
-                      ""
-                    )}
-                  </Button>
-                </div>
-              </form>
             </div>
 
-            <Collapse isOpened={isclick}>
-              <div className="card bg-white shadow-md rounded-md p-5 mt-5">
-                <div className="flex items-center">
-                  <h2 className="pb-3 font-[500] justify-between">
-                    {" "}
-                    Change Password
-                  </h2>
-                </div>
-                <form className="mt-8 " onSubmit={handlesubmitChange}>
-                  <div className="flex items-center  gap-5 ">
-                    {context.userData?.SignUpGoogle === false && (
-                      <div className="col">
-                        <TextField
-                          label="oldPassword"
-                          type="password"
-                          variant="outlined"
-                          disabled={isLoading2}
-                          value={changePassword.oldPassword}
-                          size="small"
-                          className="w-full"
-                          name="oldPassword"
-                          onChange={onChangeInput}
-                        />
-                      </div>
-                    )}
-                    <div className="col h-auto">
-                      <TextField
-                        disabled={isLoading2}
-                        value={changePassword.password}
-                        label="password"
-                        type="password"
-                        variant="outlined"
-                        size="small"
-                        className="w-full"
-                        name="password"
-                        onChange={onChangeInput}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center mt-3 gap-5 ">
-                    <div className="col">
-                      <TextField
-                        label="confirmPassword"
-                        variant="outlined"
-                        type="password"
-                        disabled={isLoading2}
-                        value={changePassword.confirmPassword}
-                        size="small"
-                        name="confirmPassword"
-                        className="w-full"
-                        onChange={onChangeInput}
-                      />
-                    </div>
-                  </div>
+            <div className="w-full">
+              <TextField
+                label="Confirm Password"
+                type="password"
+                variant="outlined"
+                disabled={isLoading2}
+                value={changePassword.confirmPassword}
+                size="small"
+                name="confirmPassword"
+                className="w-full"
+                onChange={onChangeInput}
+              />
+            </div>
 
-                  <br />
-
-                  <div className="flex items-center gap-5">
-                    <Button type="submit" className="btn-org w-[200px] h-auto">
-                      {" "}
-                      Change Password
-                      {isLoading === true ? (
-                        <CircularProgress color="inherit" />
-                      ) : (
-                        ""
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            </Collapse>
-          </div>
+            <div className="pt-2">
+              <Button type="submit" className="btn-org w-full sm:w-[200px]">
+                Change Password
+                {isLoading2 && <CircularProgress size={18} className="ml-2" />}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Collapse>
+    </div>
         </div>
       </section>
     </>

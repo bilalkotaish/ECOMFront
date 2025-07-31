@@ -14,6 +14,10 @@ import { myContext } from "../../App";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { postData } from "../../utils/api";
+import { IoMdClose } from "react-icons/io";
+import { CiFilter } from "react-icons/ci";
+
+
 export default function Sidebar(props) {
   const [isOpen, setIsopened] = useState(false);
   const [isOpen1, setIsopened1] = useState(false);
@@ -43,7 +47,7 @@ export default function Sidebar(props) {
   };
 
   const handlechangecheckbox = (field, value) => {
-    context.setSearchData([]);
+    context?.setSearchData([]);
     const currentValue = filters[field] || [];
     const updatedValue = currentValue.includes(value)
       ? currentValue.filter((item) => item !== value)
@@ -106,7 +110,7 @@ export default function Sidebar(props) {
         props.setTotalpage(res.totalPages);
       });
     }
-  }, [filters, context.searchData]);
+  }, [filters, context?.searchData]);
 
   // 3. Update Filters on PriceRange Change
   useEffect(() => {
@@ -126,8 +130,9 @@ export default function Sidebar(props) {
   }, [props.page]);
 
   return (
-    <aside className="sidebar  py-5 sticky z-50  top-0 bg-white border-r border-gray-200">
-      <div className="box mt-3">
+    <aside className="sidebar  py-5 static lg:sticky z-50  top-0 bg-white border-r border-gray-200">
+      <div className="max-h-[60vh] overflow-auto lg:overflow-hidden w-full">
+      <div className="box mt-0 lg:mt-3">
         <h3 className=" w-full text-[16px] mb-3 flex items-center font-[600] pr-3">
           Shop By Category{" "}
           <Button
@@ -178,11 +183,11 @@ export default function Sidebar(props) {
         </div>
       </div>
 
-      <div className="box mt-4">
-        <h3 className=" w-full text-[16px] mb-3 flex items-center font-[600] pr-3">
+      <div className="box mt-4 ">
+        <h3 className=" w-full text-[16px] mb-3 flex items-center font-[600] pl-0 lg:pr-3 ">
           Filter By Rating{" "}
         </h3>
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 pl-3 lg:pl-1 ">
           <FormControlLabel
             value={5}
             control={
@@ -200,7 +205,7 @@ export default function Sidebar(props) {
             className="w-full"
           />
         </div>
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 pl-3 lg:pl-1">
           <FormControlLabel
             value={4}
             control={
@@ -218,7 +223,7 @@ export default function Sidebar(props) {
             className="w-full"
           />
         </div>
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 pl-3 lg:pl-1">
           <FormControlLabel
             value={3}
             control={
@@ -236,7 +241,7 @@ export default function Sidebar(props) {
             className="w-full"
           />
         </div>
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 pl-3 lg:pl-1">
           <FormControlLabel
             value={2}
             control={
@@ -254,7 +259,7 @@ export default function Sidebar(props) {
             className="w-full"
           />
         </div>
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-2 pl-3 lg:pl-1">
           <FormControlLabel
             value={1}
             control={
@@ -273,6 +278,10 @@ export default function Sidebar(props) {
           />
         </div>
       </div>
+      </div>
+      <Button className="btn-org btn w-full gap-2 !mt-3 !mb-2 flex lg:!hidden">
+            <CiFilter className="text-[20px]"/>Filter
+      </Button>
     </aside>
   );
 }

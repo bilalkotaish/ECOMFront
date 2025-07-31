@@ -248,7 +248,9 @@ export default function ProductItem(props) {
               )}
             </Button>
           </Tooltip>
-
+            {
+              context.windowWidth>992 &&
+            
           <Tooltip title="Quick view">
             <Button
               className="!p-2 !rounded-full w-[35px] h-[35px] !bg-white text-gray-600 hover:!bg-red-300 hover:text-white transition-all duration-300"
@@ -260,7 +262,7 @@ export default function ProductItem(props) {
               />
             </Button>
           </Tooltip>
-
+}
           {/* <Tooltip title="Compare">
             <Button className="!p-2 !rounded-full w-[35px] h-[35px] !bg-white text-gray-600 hover:!bg-primary hover:text-white transition-all duration-300">
               <IoGitCompareOutline size={18} />
@@ -309,7 +311,7 @@ export default function ProductItem(props) {
               fullWidth
               disabled={quantity < 1 || quantity > item.countInStock}
               onClick={() => Addtocart(item, context.userData?._id, quantity)}
-              className="btn-org btn-border addtocartbtn !normal-case py-2 rounded-lg transition duration-300"
+              className="btn-org btn-border addtocartbtn !normal-case !pt-2  rounded-lg transition duration-300"
               startIcon={<MdOutlineAddShoppingCart />}
             >
               Add to Cart

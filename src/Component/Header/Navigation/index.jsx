@@ -34,7 +34,7 @@ export default function Navigation(props) {
       <nav className="navigation ">
         <div className="container flex items-center justify-start lg:justify-end gap-9 ">
           {
-            context.windowWidth>992 &&
+            context?.windowWidth>992 &&
           
           <div className="col_1 w-[20%] ">
             <Button

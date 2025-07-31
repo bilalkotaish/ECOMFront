@@ -13,7 +13,7 @@ import "swiper/css/pagination";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import TextField from "@mui/material/TextField";
 import ProductSlider from "../ProductSlider";
-import { IoMdHeartEmpty } from "react-icons/io";
+import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 import { IoGitCompareOutline } from "react-icons/io5";
 import ProductModal from "../ProductModal";
 import { fetchData } from "../../utils/api";
@@ -24,6 +24,7 @@ import { useContext } from "react";
 import { myContext } from "../../App";
 
 import Qtybox from "../Qtybox";
+
 export default function ProductDetails() {
   const { id } = useParams();
   const [buttonindex, setbuttonindex] = useState(null);
@@ -65,6 +66,7 @@ export default function ProductDetails() {
     usezoom1.current.swiper.slideTo(index);
     usezoom2.current.swiper.slideTo(index);
   };
+  
   useEffect(() => {
     fetchData(`/api/product/${id}`).then((res) => {
       if (res?.error === false) {
@@ -94,6 +96,7 @@ export default function ProductDetails() {
     });
     setActiveTab(1);
   };
+
   const Addtocart = (product, userId, quantity) => {
     const productItems = {
       ...product,
@@ -114,10 +117,17 @@ export default function ProductDetails() {
       }
     }
   };
+  const handleWishlist = (item) => {
+    context.handleWishlist(item);
+    context.getList();
+  };
+
   return (
     <>
+     {
+              context.windowWidth>992 &&
       <div className="py-5">
-        <div className="container">
+        <div className="container mx-auto">
           <div role="presentation">
             <Breadcrumbs aria-label="breadcrumb">
               <Link underline="hover" color="inherit" to={"/"} className="link">
@@ -126,7 +136,6 @@ export default function ProductDetails() {
               <Link
                 underline="hover"
                 color="inherit"
-                // to={`/products?catId=${item._id}`}
                 className="link"
               >
                 {product?.category?.name}
@@ -134,7 +143,6 @@ export default function ProductDetails() {
               <Link
                 underline="hover"
                 color="inherit"
-                // to={`/products?catId=${item._id}`}
                 className="link"
               >
                 {product?.name}
@@ -143,26 +151,26 @@ export default function ProductDetails() {
           </div>
         </div>
       </div>
-
+}
       <section className="!bg-white py-5">
         {product?.images?.length > 0 && (
-          <div className=" container flex gap-8 items-center">
-            <div className="productzoom w-[40%] h-[500px] overflow-hidden">
-              <div className="flex gap-3 ">
-                <div className="slider w-[15%]">
+          <div className="container mx-auto flex flex-col lg:flex-row gap-8 items-center">
+            <div className="productzoom w-full lg:w-[40%]  ">
+              <div className="flex gap-3  ">
+                <div className={`slider w-[20%] lg:w-[15%] `}>
                   <Swiper
                     ref={usezoom1}
                     direction={"vertical"}
-                    slidesPerView={4} // Number of slides visible at a time
-                    spaceBetween={5} // Space between slides
-                    navigation={false} // Enable navigation buttons (next/prev)
-                    modules={[Navigation]} // Import navigation module
-                    className="zoomthumbs h-[500px]"
+                    slidesPerView={4}
+                    spaceBetween={5}
+                    navigation={false}
+                    modules={[Navigation]}
+                    className="zoomthumbs h-auto  lg:h-[500px]"
                   >
                     {product?.images?.map((item, index) => (
                       <SwiperSlide key={index}>
                         <div
-                          className={`item  rounded-md !overflow-hidden cursor-pointer group ${
+                          className={`item rounded-md !overflow-hidden cursor-pointer group ${
                             slideindex === index ? "opacity-1" : "opacity-30"
                           }`}
                           onClick={() => {
@@ -172,42 +180,38 @@ export default function ProductDetails() {
                           <img
                             src={item.url}
                             alt={`Product ${index}`}
-                            className=" w-full transition-full rounded-lg group-hover:scale-105"
+                            className="w-full transition-full rounded-lg group-hover:scale-105"
                           />
                         </div>
                       </SwiperSlide>
                     ))}
                   </Swiper>
                 </div>
-                {
-                  <div className="zoomcontainer w-[85%] h-[500px] overflow-hidden rounded-md">
-                    <Swiper
-                      slidesPerView={1}
-                      ref={usezoom2}
-                      spaceBetween={0}
-                      navigation={false}
-                    >
-                      {product?.images?.map((item, index) => (
-                        <SwiperSlide key={index}>
-                          <InnerImageZoom
-                            src={item.url}
-                            zoomType="hover"
-                            zoomScale={1}
-                          />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  </div>
-                }
+                <div className="zoomcontainer w-full lg:w-[85%] h-[500px] overflow-hidden rounded-md">
+                  <Swiper
+                    slidesPerView={1}
+                    ref={usezoom2}
+                    spaceBetween={0}
+                    navigation={false}
+                  >
+                    {product?.images?.map((item, index) => (
+                      <SwiperSlide key={index}>
+                        <InnerImageZoom
+                          src={item.url}
+                          zoomType="hover"
+                          zoomScale={1}
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
               </div>
             </div>
             <div className="content w-full md:w-[100%] px-4 md:px-8 lg:px-12">
-              {/* Product Title */}
-              <h1 className="text-2xl md:text-3xl !space-nowrap font-semibold no-wrap mb-4 text-gray-900 tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-semibold no-wrap mb-4 text-gray-900 tracking-tight">
                 {product?.name}
               </h1>
 
-              {/* Rating and Brand */}
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
                   <Rating
@@ -234,7 +238,6 @@ export default function ProductDetails() {
                 </div>
               </div>
 
-              {/* Price Section */}
               <div className="mb-6">
                 <div className="flex items-baseline gap-3 mb-1">
                   {product?.oldprice && (
@@ -271,7 +274,6 @@ export default function ProductDetails() {
                 </div>
               </div>
 
-              {/* Description */}
               <div className="mb-8">
                 <h3 className="text-sm font-medium text-gray-900 mb-2">
                   Description
@@ -280,7 +282,7 @@ export default function ProductDetails() {
                   {product?.description || "No description available."}
                 </p>
               </div>
-              {/* Size Selection */}
+
               {product?.size.length > 0 && (
                 <div className="flex items-center mb-5">
                   <span className="text-base font-medium">Size:</span>
@@ -364,22 +366,28 @@ export default function ProductDetails() {
                 </Button>
               </div>
 
-              {/* Wishlist & Compare */}
               <div className="flex items-center gap-6">
-                <span className="flex items-center gap-2 cursor-pointer text-gray-600 hover:text-primary transition text-sm">
-                  <IoMdHeartEmpty className="text-lg" />
-                  Add To Wishlist
+                <span onClick={() => handleWishlist(product)} className="flex items-center gap-2 cursor-pointer text-gray-600 hover:text-primary transition text-sm">
+                {context.isInWishlist(product._id) ? (<>
+                 
+                <IoMdHeart className="text-red-500 drop-shadow-md" size={20} /> Remove From Wishlist
+                </>
+              ) : (<>
+                <IoMdHeartEmpty
+                  className="text-gray-400 hover:text-red-500"
+                  size={20}
+                />Add To Wishlist
+                </>
+              )}
+                 
                 </span>
-                <span className="flex items-center gap-2 cursor-pointer text-gray-600 hover:text-primary transition text-sm">
-                  <IoGitCompareOutline className="text-lg" />
-                  Add To Compare
-                </span>
+               
               </div>
             </div>
           </div>
         )}
 
-        <div className="container !mt-10">
+        <div className="container mx-auto !mt-10">
           <div className="flex items-center gap-8 mb-5">
             <span
               className={`text-[18px] link cursor-pointer ${
@@ -420,10 +428,10 @@ export default function ProductDetails() {
           )}
         </div>
 
-        <div className="flex items-center pt-10  ">
+        <div className="flex items-center pt-10">
           <div className="leftsec ml-6">
-            <h2 className="text-[25px] font-[600] mb-2 ">Related Products</h2>
-          </div>{" "}
+            <h2 className="text-[25px] font-[600] mb-2">Related Products</h2>
+          </div>
         </div>
         {relatedProducts?.length > 0 && (
           <div className="ml-6 mr-6">

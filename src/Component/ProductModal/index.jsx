@@ -1,167 +1,137 @@
 import { IoMdHeartEmpty } from "react-icons/io";
-import { IoGitCompareOutline } from "react-icons/io5";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import Rating from "@mui/material/Rating";
 import { Button } from "@mui/material";
-import { Link } from "react-router-dom";
-import Qtybox from "../../Component/Qtybox";
 import { useContext, useEffect, useState } from "react";
-import { CiShare1 } from "react-icons/ci";
 import { fetchData } from "../../utils/api";
 import { myContext } from "../../App";
+import Qtybox from "../../Component/Qtybox";
 
-export default function ProductModal(props) {
+export default function ProductModal({ item }) {
   const [selectedTabSize, setSelectedTabSize] = useState(null);
-  const [selectedTabWeight, setSelectedTabWeight] = useState(null);
   const [selectedTabRam, setSelectedTabRam] = useState(null);
-  const [activeTabs, setactiveTabs] = useState(null);
-  const context = useContext(myContext);
-  const [quantity, setQuantity] = useState(1);
-
-  const handleSelectQty = (qty) => {
-    setQuantity(qty);
-  };
-
-  const handleclick = (index, size) => {
-    setactiveTabs(index);
-    setSelectedTabSize(size);
-  };
-  const handleclickram = (index, ram) => {
-    setactiveTabs(index);
-    setSelectedTabRam(ram);
-  };
-  const handleclickweight = (index, weight) => {
-    setactiveTabs(index);
-    setSelectedTabWeight(weight);
-  };
-
+  const [selectedTabWeight, setSelectedTabWeight] = useState(null);
+  const [sizeIndex, setSizeIndex] = useState(null);
+  const [ramIndex, setRamIndex] = useState(null);
+  const [weightIndex, setWeightIndex] = useState(null);
   const [ReviewsCount, setReviewsCount] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const context = useContext(myContext);
 
   useEffect(() => {
-    fetchData(`/api/user/Reviews?productId=${props.item?._id}`)
+    fetchData(`/api/user/Reviews?productId=${item?._id}`)
       .then((res) => {
-        if (res?.success) {
-          setReviewsCount(res?.data?.length || 0);
-        } else {
-          setReviewsCount(0);
-        }
+        setReviewsCount(res?.success ? res.data.length : 0);
       })
-      .catch(() => {
-        setReviewsCount(0);
-      });
-  }, [props.item?._id]);
-  const Addtocart = (product, userId, quantity) => {
+      .catch(() => setReviewsCount(0));
+  }, [item?._id]);
+
+  const handleAddToCart = () => {
     const productItems = {
-      ...product,
+      ...item,
       size: selectedTabSize,
       weight: selectedTabWeight,
       productRam: selectedTabRam,
     };
-    if (activeTabs !== null) {
-      context?.AddtoCart(productItems, userId, quantity);
-      setactiveTabs(null);
-      context.handleClose();
-    } else {
-      if (productItems.size?.length !== 0) {
-        context.Alertbox("error", "Please select a Size to add to cart");
-      } else if (productItems.weight?.length !== 0) {
-        context.Alertbox("error", "Please select a Weight to add to cart");
-      } else if (productItems.productRam?.length !== 0) {
-        context.Alertbox("error", "Please select a Ram to add to cart");
-      }
-    }
+
+    if (item.size?.length > 0 && !selectedTabSize)
+      return context.Alertbox("error", "Please select a Size to add to cart");
+
+    if (item.productRam?.length > 0 && !selectedTabRam)
+      return context.Alertbox("error", "Please select a Ram to add to cart");
+
+    if (item.productweight?.length > 0 && !selectedTabWeight)
+      return context.Alertbox("error", "Please select a Weight to add to cart");
+
+    context?.AddtoCart(productItems, context.userData?._id, quantity);
+    setSizeIndex(null);
+    setRamIndex(null);
+    setWeightIndex(null);
+    context.handleClose();
   };
 
   return (
-    <div className="content w-full md:w-[100%] px-4 md:px-8 lg:px-12">
-      {/* Product Title */}
-      <h1 className="text-2xl md:text-3xl !space-nowrap font-semibold no-wrap mb-4 text-gray-900 tracking-tight">
-        {props.item?.name}
+    <div className="w-full p-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+      {/* Title */}
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 text-gray-900">
+        {item?.name}
       </h1>
 
-      {/* Rating and Brand */}
+      {/* Ratings and Brand */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
           <Rating
-            name="product-rating"
-            value={props.item?.rating || 0}
+            value={item?.rating || 0}
             precision={0.5}
             size="small"
             readOnly
             className="!text-yellow-500"
           />
           <span className="text-xs text-gray-600 ml-1">
-            ({ReviewsCount || `No reviews`})Reviews
+            ({ReviewsCount || "No reviews"}) Reviews
           </span>
         </div>
         <div className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-          Brand:{" "}
-          <span className="font-medium text-gray-800">
-            {props.item?.brand || "Unknown"}
-          </span>
+          Brand: <span className="font-medium text-gray-800">{item?.brand || "Unknown"}</span>
         </div>
       </div>
 
-      {/* Price Section */}
+      {/* Price */}
       <div className="mb-6">
-        <div className="flex items-baseline gap-3 mb-1">
-          {props.item?.oldprice && (
+        <div className="flex flex-wrap items-baseline gap-3 mb-1">
+          {item?.oldprice && (
             <span className="line-through text-gray-400 text-lg font-medium">
-              ${props.item?.oldprice.toFixed(2)}
+              ${item?.oldprice.toFixed(2)}
             </span>
           )}
           <span className="text-primary text-2xl font-bold">
-            ${props.item?.price?.toFixed(2) || "N/A"}
+            ${item?.price?.toFixed(2) || "N/A"}
           </span>
-          {props.item?.discount && (
-            <span className="ml-2 bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded">
-              {props.item?.discount}% OFF
+          {item?.discount && (
+            <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded">
+              {item.discount}% OFF
             </span>
           )}
         </div>
-        <div className="text-sm text-gray-600">
-          <span
-            className={
-              props.item?.countInStock > 0 ? "text-green-600" : "text-red-600"
-            }
-          >
-            {props.item?.countInStock > 0
-              ? `In Stock (${props.item?.countInStock} available)`
+        <div className="text-sm text-gray-600 mt-1">
+          <span className={item?.countInStock > 0 ? "text-green-600" : "text-red-600"}>
+            {item?.countInStock > 0
+              ? `In Stock (${item?.countInStock})`
               : "Out of Stock"}
           </span>
-          {props.item?.countInStock > 0 && (
+          {item?.countInStock > 0 && (
             <span className="ml-2 text-gray-500 italic">
-              Free shipping (2-3 business days)
+              Free shipping (2-3 days)
             </span>
           )}
         </div>
       </div>
 
       {/* Description */}
-      <div className="mb-8">
+      <div className="mb-6">
         <h3 className="text-sm font-medium text-gray-900 mb-2">Description</h3>
         <p className="text-gray-700 text-sm leading-relaxed">
-          {props.item?.description || "No description available."}
+          {item?.description || "No description available."}
         </p>
       </div>
 
-      {/* Size Selection */}
-
-      {props.item?.size?.length > 0 && (
-        <div className="flex items-center mb-5">
-          <span className="text-base font-medium">Size:</span>
-          <div className="flex items-center gap-2 pl-4">
-            {props.item?.size?.map((size, index) => (
+      {/* Options (Size, Ram, Weight) */}
+      {item?.size?.length > 0 && (
+        <div className="mb-4">
+          <span className="block text-base font-medium mb-1">Size:</span>
+          <div className="flex flex-wrap gap-2">
+            {item.size.map((size, index) => (
               <Button
                 key={index}
                 variant="outlined"
                 size="small"
+                onClick={() => {
+                  setSelectedTabSize(size);
+                  setSizeIndex(index);
+                }}
                 className={`!rounded-full !px-4 !py-1 ${
-                  activeTabs === index
-                    ? "!bg-primary !text-white"
-                    : "!text-gray-700"
+                  sizeIndex === index ? "!bg-primary !text-white" : "!text-gray-700"
                 }`}
-                onClick={() => handleclick(index, size)}
               >
                 {size}
               </Button>
@@ -169,21 +139,23 @@ export default function ProductModal(props) {
           </div>
         </div>
       )}
-      {props.item?.productRam?.length > 0 && (
-        <div className="flex items-center mb-5">
-          <span className="text-base font-medium">Ram:</span>
-          <div className="flex items-center gap-2 pl-4">
-            {props.item?.productRam?.map((ram, index) => (
+
+      {item?.productRam?.length > 0 && (
+        <div className="mb-4">
+          <span className="block text-base font-medium mb-1">Ram:</span>
+          <div className="flex flex-wrap gap-2">
+            {item.productRam.map((ram, index) => (
               <Button
                 key={index}
                 variant="outlined"
                 size="small"
+                onClick={() => {
+                  setSelectedTabRam(ram);
+                  setRamIndex(index);
+                }}
                 className={`!rounded-full !px-4 !py-1 ${
-                  activeTabs === index
-                    ? "!bg-primary !text-white"
-                    : "!text-gray-700"
+                  ramIndex === index ? "!bg-primary !text-white" : "!text-gray-700"
                 }`}
-                onClick={() => handleclickram(index, ram)}
               >
                 {ram}
               </Button>
@@ -191,21 +163,25 @@ export default function ProductModal(props) {
           </div>
         </div>
       )}
-      {props.item?.productweight?.length > 0 && (
-        <div className="flex items-center mb-5">
-          <span className="text-base font-medium">Weight:</span>
-          <div className="flex items-center gap-2 pl-4">
-            {props.item?.productweight?.map((weight, index) => (
+
+      {item?.productweight?.length > 0 && (
+        <div className="mb-4">
+          <span className="block text-base font-medium mb-1">Weight:</span>
+          <div className="flex flex-wrap gap-2">
+            {item.productweight.map((weight, index) => (
               <Button
                 key={index}
                 variant="outlined"
                 size="small"
+                onClick={() => {
+                  setSelectedTabWeight(weight);
+                  setWeightIndex(index);
+                }}
                 className={`!rounded-full !px-4 !py-1 ${
-                  activeTabs === index
+                  weightIndex === index
                     ? "!bg-primary !text-white"
                     : "!text-gray-700"
                 }`}
-                onClick={() => handleclickweight(index, weight)}
               >
                 {weight}
               </Button>
@@ -213,91 +189,24 @@ export default function ProductModal(props) {
           </div>
         </div>
       )}
-      {/* <div className="flex items-center mb-5">
-        <span className="text-base font-medium">Size:</span>
-        <div className="flex items-center gap-2 pl-4">
-          {props.item?.size?.map((size, index) => (
-            <Button
-              key={index}
-              variant="outlined"
-              size="small"
-              className={`!rounded-full !px-4 !py-1 ${
-                buttonindex === index
-                  ? "!bg-primary !text-white"
-                  : "!text-gray-700"
-              }`}
-              onClick={() => handleclick(index)}
-            >
-              {size}
-            </Button>
-          ))}
-        </div>
-      </div>
-      <div className="flex items-center mb-5">
-        <span className="text-base font-medium">Ram:</span>
-        <div className="flex items-center gap-2 pl-4">
-          {props.item?.productRam?.map((ram, index) => (
-            <Button
-              key={index}
-              variant="outlined"
-              size="small"
-              className={`!rounded-full !px-4 !py-1 ${
-                buttonindex1 === index
-                  ? "!bg-primary !text-white"
-                  : "!text-gray-700"
-              }`}
-              onClick={() => handleclickram(index)}
-            >
-              {ram}
-            </Button>
-          ))}
-        </div>
-      </div>
-      <div className="flex items-center mb-5">
-        <span className="text-base font-medium">Weight:</span>
-        <div className="flex items-center gap-2 pl-4">
-          {props.item?.productweight?.map((weight, index) => (
-            <Button
-              key={index}
-              variant="outlined"
-              size="small"
-              className={`!rounded-full !px-4 !py-1 ${
-                buttonindex2 === index
-                  ? "!bg-primary !text-white"
-                  : "!text-gray-700"
-              }`}
-              onClick={() => handleclickweight(index)}
-            >
-              {weight}
-            </Button>
-          ))}
-        </div>
-      </div> */}
 
       {/* Quantity & Add to Cart */}
-      <div className="flex items-center mb-5">
-        <div className="flex items-center gap-2 w-[80px]">
-          <Qtybox handleSelectQty={handleSelectQty} />
-        </div>
+      <div className="flex flex-wrap items-center mb-5 gap-4">
+        <Qtybox handleSelectQty={setQuantity} />
         <Button
           variant="contained"
-          onClick={() => Addtocart(props.item, context.userData?._id, quantity)}
-          className="!bg-primary !text-white flex items-center gap-2 !ml-4 !px-4 !py-2 hover:!bg-primary-dark whitespace-nowrap"
+          onClick={handleAddToCart}
+          className="!bg-primary !text-white flex items-center gap-2 !px-4 !py-2 hover:!bg-primary-dark"
         >
-          <MdOutlineAddShoppingCart className="text-sm" />
+          <MdOutlineAddShoppingCart className="text-lg" />
           Add To Cart
         </Button>
       </div>
 
-      {/* Wishlist & Compare */}
-      <div className="flex items-center gap-6">
-        <span className="flex items-center gap-2 cursor-pointer text-gray-600 hover:text-primary transition text-sm">
-          <IoMdHeartEmpty className="text-lg" />
-          Add To Wishlist
-        </span>
-        <span className="flex items-center gap-2 cursor-pointer text-gray-600 hover:text-primary transition text-sm">
-          <IoGitCompareOutline className="text-lg" />
-          Add To Compare
+      {/* Wishlist */}
+      <div className="flex items-center gap-6 text-sm text-gray-600">
+        <span className="flex items-center gap-2 cursor-pointer hover:text-primary">
+          <IoMdHeartEmpty className="text-lg" /> Add To Wishlist
         </span>
       </div>
     </div>

@@ -319,6 +319,7 @@ input[type="number"]::-webkit-outer-spin button {
 }
 .cartpanel .MuiPaper-root {
   width: 400px !important;
+  overflow-x: hidden;
 }
 .addresspanel .MuiPaper-root {
   width: 500px !important;

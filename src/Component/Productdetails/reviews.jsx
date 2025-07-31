@@ -1,9 +1,7 @@
 import Rating from "@mui/material/Rating";
 import { Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
-import { useEffect } from "react";
-import { useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { myContext } from "../../App";
 import { fetchData, postData } from "../../utils/api";
 
@@ -18,20 +16,17 @@ export default function Reviews(props) {
     userId: "",
     productId: "",
   });
-  const [reviewData, setReviewData] = useState();
+
+  const [reviewData, setReviewData] = useState([]);
 
   const onChangeReview = (e) => {
-    setReview({
-      ...review,
-      review: e.target.value,
-    });
+    setReview({ ...review, review: e.target.value });
   };
+
   const onChangeRating = (event, newValue) => {
-    setReview((prev) => ({
-      ...prev,
-      rating: newValue,
-    }));
+    setReview((prev) => ({ ...prev, rating: newValue }));
   };
+
   const onSubmitReview = (e) => {
     e.preventDefault();
     if (review.review === "") {
@@ -39,16 +34,12 @@ export default function Reviews(props) {
       return;
     }
     postData("/api/user/addReview", review).then((res) => {
-      if (res.error === true) {
+      if (res.error) {
         context.Alertbox("error", res.message);
         return;
       }
       context.Alertbox("success", res.message);
-      setReview((prev) => ({
-        ...prev,
-        rating: 1,
-        review: "",
-      }));
+      setReview((prev) => ({ ...prev, rating: 1, review: "" }));
       GetReviews();
     });
   };
@@ -66,11 +57,7 @@ export default function Reviews(props) {
   const GetReviews = async () => {
     try {
       if (!props.productId) return;
-
-      const res = await fetchData(
-        `/api/user/Reviews?productId=${props.productId}`
-      );
-      console.log("Fetched reviews:", res?.data);
+      const res = await fetchData(`/api/user/Reviews?productId=${props.productId}`);
       setReviewData(res?.data || []);
       props.setReviewsCount?.(res?.data?.length || 0);
     } catch (error) {
@@ -87,63 +74,63 @@ export default function Reviews(props) {
   }, [props.productId]);
 
   return (
-    <div className="shadow-md w-full p-5 rounded-md">
+    <div className="shadow-md w-full p-4 md:p-5 rounded-md bg-white">
       <div className="containerreview w-full">
-        <h2 className="font-[500] text-[20px]"> Customers Questions</h2>
-        {reviewData && reviewData?.length === 0 ? (
-          <h2 className="font-[500] text-[20px]">No Reviews</h2>
-        ) : (
-          <div className="reviewscroll w-full pt-5 pb-4 pr-5 overflow-x-hidden overflow-y-scroll max-h-[300px] ">
-            {reviewData?.map((item) => (
-              <div className="w-full review flex items-center justify-between  border-b border-[rgba(0,0,0,0.3)]   mt-4">
-                <div className="info w-[80%] flex items-center gap-2">
-                  <div className="img w-[60px] h-[60px] rounded-full overflow-hidden">
-                    <img src={item.image} className="w-full" alt="" />
-                  </div>
+        <h2 className="font-medium text-[16px] md:text-[20px] mb-2">
+          Customer Reviews
+        </h2>
 
-                  <div className="info w-[80%]">
-                    <h3 className="text-[16px]">{item.userName}</h3>
-                    <h5 className="text-[13px] text-gray-500 mb-0">
+        {reviewData?.length === 0 ? (
+          <h2 className="font-medium text-[16px]">No Reviews</h2>
+        ) : (
+          <div className="reviewscroll w-full pt-4 pb-4 pr-3 overflow-y-auto max-h-[300px]">
+            {reviewData.map((item) => (
+              <div
+                key={item._id}
+                className="w-full flex flex-wrap md:flex-nowrap items-start justify-between border-b border-gray-300 py-3"
+              >
+                <div className="info flex items-start gap-3 w-full md:w-[80%]">
+                  <div className="img w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full overflow-hidden">
+                    <img src={item.image} className="w-full h-full object-cover" alt="User" />
+                  </div>
+                  <div className="info w-full">
+                    <h3 className="text-[14px] md:text-[16px] font-semibold">{item.userName}</h3>
+                    <p className="text-[12px] text-gray-500">
                       {new Date(item.createdAt).toISOString().split("T")[0]}
-                    </h5>
-                    <p className=" mt-0 mb-0">{item.review}</p>
+                    </p>
+                    <p className="text-[14px] mt-1">{item.review}</p>
                   </div>
                 </div>
-                <Rating
-                  name="size-small"
-                  value={item.rating}
-                  size="small"
-                  readOnly
-                />
+                <div className="mt-2 md:mt-0">
+                  <Rating name="size-small" value={item.rating} size="small" readOnly />
+                </div>
               </div>
             ))}
           </div>
         )}
 
-        <br />
-
-        <div className="reviewform bg-[#fafafa] rounded-md p-4 mr-6 ">
-          <h2 className="text-[18px] font-[500] "> Add Review</h2>
-          <form className="w-full mt-5" onSubmit={onSubmitReview}>
+        <div className="reviewform bg-[#fafafa] rounded-md p-4 mt-6">
+          <h2 className="text-[16px] md:text-[18px] font-medium mb-4">Add Review</h2>
+          <form className="w-full" onSubmit={onSubmitReview}>
             <TextField
-              id="outlined-multiline-flexible"
-              label="Leave A Review"
+              label="Leave a Review"
               multiline
               rows={4}
               value={review.review}
               onChange={onChangeReview}
               name="review"
-              className="w-full "
+              fullWidth
+              size="small"
             />
-            <br /> <br />
-            <Rating
-              name="size-small "
-              value={review.rating}
-              onChange={onChangeRating}
-            />
-            <div className="flex items-center mt-5">
+            <div className="flex items-center justify-between mt-4 flex-wrap gap-2">
+              <Rating
+                name="user-rating"
+                value={review.rating}
+                onChange={onChangeRating}
+              />
               <Button
                 type="submit"
+                variant="contained"
                 className="!bg-primary !text-white !rounded-full"
               >
                 Submit Review

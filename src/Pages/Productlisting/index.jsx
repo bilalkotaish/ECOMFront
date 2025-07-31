@@ -9,13 +9,15 @@ import { BsFillGridFill } from "react-icons/bs";
 import { IoMdMenu } from "react-icons/io";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Pagination from "@mui/material/Pagination";
 import ProductLoaderGrid from "../../Component/Productloader/productLoadergrid.jsx";
 import { FaAngleDown } from "react-icons/fa";
 import { FaAngleUp } from "react-icons/fa";
 import { postData } from "../../utils/api.js";
-
+import { myContext } from "../../App.jsx";
+import { useLocation } from "react-router-dom";
+import { MdClose } from "react-icons/md";
 export default function Productlisting() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [ItemView, SetItemView] = useState("grid");
@@ -26,15 +28,17 @@ export default function Productlisting() {
   const [sort, setSort] = useState("Name A-Z");
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const open = Boolean(anchorEl);
+  const context = useContext(myContext)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+  
   const handleSortBy = (name, order, products, value) => {
     setSort(value);
-
     const plainArray = Array.isArray(products) ? products : products?.products;
 
     postData("/api/product/Sort", {
@@ -49,28 +53,29 @@ export default function Productlisting() {
   };
 
   return (
-    <section className="py-8">
-      <div className="container">
+    
+    <section className=" py-0 lg:py-6">
+       {
+              context.windowWidth>992 &&
+      <div className="container mx-auto px-4">
         <div role="presentation">
           <Breadcrumbs aria-label="breadcrumb">
             <Link underline="hover" color="inherit" href="/" className="link">
               Home
             </Link>
-            <Link
-              underline="hover"
-              color="inherit"
-              // to={`/products?catId=${item._id}`}
-              className="link"
-            >
+            <Link underline="hover" color="inherit" className="link">
               Fashion
             </Link>
           </Breadcrumbs>
         </div>
-      </div>
+      </div>}
 
-      <div className="bg-white p-2 mt-3 ">
-        <div className="container flex gap-3">
-          <div className="sidebarwrapper w-[20%]  bg-white p-3">
+      <div className="bg-white p-2 lg:mt-3">
+        <div className="container flex flex-col md:flex-row gap-3">
+          <div className={`sidebarwrapper  transition-all fixed -bottom-[100%] left-0 z-[102]
+             lg:static lg:w-[20%]  lg:z-[100] lg:h-full   md:w-1/4 bg-white p-3 lg:opacity-100
+             opacity-0
+             ${context?.openFilter === true ? 'open' : ""} `}>
             <Sidebar
               productData={productData}
               setproductData={setproductData}
@@ -82,39 +87,54 @@ export default function Productlisting() {
               setTotalpage={setTotalpage}
             />
           </div>
-          <div className="rightcontent w-[80%] py-3">
-            <div className="p-2 w-full sticky top-0 right-0 z-10 bg-[#f1f1f1] mb-4 rounded-md flex items-center justify-between">
-              <div className="col-1 flex  items-center gap-0 itemViewActions">
+
+          <div  className={`overlay_filter w-full h-full bg-[rgba(0,0,0,0.7)] fixed top-0 left-0 z-[101] ${context.openFilter === true?'block':'hidden'} lg:hidden`}>
+            <MdClose className="text-white text-[25px] top-0 ml-auto" onClick={()=>context.setopenFilter(false)}/>
+
+          </div>
+
+          <div className="rightcontent w-full lg:w-[80%] py-4">
+            <div className="p-1 w-full sticky h-auto top-0 right-0 z-10 bg-[#f1f1f1] mb-4 rounded-md flex items-center !justify-between">
+              <div className="flex items-center gap-2 sm:gap-2 lg:gap-3 itemViewActions">
+                {/* List View Button */}
                 <Button
-                  className={`!w-[40px] !h-[40px] !rounded-full !text-black ${
-                    ItemView === "list" && "active"
-                  }`}
-                  onClick={() => {
-                    SetItemView("list");
-                  }}
+                  className={`!rounded-full !text-black 
+      sm:!w-[32px] sm:!h-[32px] sm:!p-2
+      !p-0 !min-w-0 w-auto h-auto
+    `}
+                  onClick={() => SetItemView("list")}
                 >
-                  <IoMdMenu />
+                  <IoMdMenu
+                    className={`text-[18px] sm:text-[18px] ${ItemView === "list" ? "text-primary" : "text-black"
+                      }`}
+                  />
                 </Button>
+
+                {/* Grid View Button */}
                 <Button
-                  className={`!w-[40px] !h-[40px] !rounded-full !text-black  ${
-                    ItemView === "grid" && "active"
-                  }`}
-                  onClick={() => {
-                    SetItemView("grid");
-                  }}
+                  className={`!rounded-full !text-black 
+      sm:!w-[32px] sm:!h-[32px] sm:!p-2
+      !p-0 !min-w-0 w-auto h-auto
+    `}
+                  onClick={() => SetItemView("grid")}
                 >
-                  <BsFillGridFill />
+                  <BsFillGridFill
+                    className={`text-[16px] sm:text-[18px] ${ItemView === "grid" ? "text-primary" : "text-black"
+                      }`}
+                  />
                 </Button>
-                <span className="text-[14px] font-[400] text-[rgba(0,0,0,0.5)]">
-                  {" "}
-                  There are {productData?.length} products Available{" "}
-                </span>
+                {
+              context.windowWidth>992 &&
+                <span className="text-[12px] sm:text-[13px] lg:text-[14px] font-[400] text-[rgba(0,0,0,0.5)] whitespace-nowrap">
+                  There are {productData?.length} products Available
+                </span>}
               </div>
 
-              <div className="col-2 ml-auto flex items-center justify-end gap-2">
-                <span className="text-sm font-semibold text-gray-500">
-                  Sort by
-                </span>
+
+
+
+              <div className="col-2 ml-auto whitespace-nowrap flex items-center justify-end gap-2">
+                <span className="text-[12px] lg:text-sm font-semibold text-gray-500">Sort by</span>
 
                 <Button
                   id="basic-button"
@@ -155,12 +175,7 @@ export default function Productlisting() {
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      handleSortBy(
-                        "price",
-                        "asc",
-                        productData,
-                        "Price Low to High"
-                      );
+                      handleSortBy("price", "asc", productData, "Price Low to High");
                     }}
                     className="!text-sm !text-gray-800 hover:!bg-gray-100"
                   >
@@ -168,12 +183,7 @@ export default function Productlisting() {
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      handleSortBy(
-                        "price",
-                        "desc",
-                        productData,
-                        "Price High to Low"
-                      );
+                      handleSortBy("price", "desc", productData, "Price High to Low");
                     }}
                     className="!text-sm !text-gray-800 hover:!bg-gray-100"
                   >
@@ -183,32 +193,21 @@ export default function Productlisting() {
               </div>
             </div>
             <div
-              className={`grid gap-4 ${
-                ItemView === "grid"
-                  ? "grid-cols-5 sm:grid-cols-3 md:grid-cols-5"
-                  : "grid-cols-1 sm:grid-cols-1 md:grid-cols-1"
-              }`}
+              className={`grid gap-3 ${ItemView === "grid"
+                  ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4"
+                  : "grid-cols-1"
+                }`}
             >
-              {ItemView === "grid" ? (
-                <>
-                  {isLoading === true ? (
-                    <ProductLoaderGrid view={ItemView} />
-                  ) : (
-                    productData?.map((item, index) => (
-                      <ProductItem key={index} item={item} />
-                    ))
-                  )}
-                </>
+              {isLoading ? (
+                <ProductLoaderGrid view={ItemView} />
               ) : (
-                <>
-                  {isLoading === true ? (
-                    <ProductLoaderGrid view={ItemView} />
+                productData?.map((item, index) => (
+                  ItemView === "grid" ? (
+                    <ProductItem key={index} item={item} />
                   ) : (
-                    productData?.map((item, index) => (
-                      <ProductItemListView key={index} item={item} />
-                    ))
-                  )}
-                </>
+                    <ProductItemListView key={index} item={item} />
+                  )
+                ))
               )}
             </div>
 
