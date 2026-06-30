@@ -59,10 +59,6 @@ Start the development server:
 npm run dev
 ```
 
-## 📸 Preview
-
-<img src="./preview.png" alt="Billy E-Commerce Preview" />
-
 ## 📄 License
 
 This project is licensed under the MIT License.
